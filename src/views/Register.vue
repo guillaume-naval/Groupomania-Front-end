@@ -1,22 +1,17 @@
 <template>
-<nav>
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/register">Inscription</router-link>
-  </nav>
   <main class="container">
     <section>
-      <form @submit.prevent="sendDataForm(event)">
+      <form @submit.prevent="sendDataForm(event)" >
         <h1>INSCRIPTION</h1>
         <div>
-          <label for="inputUserName">Nom d'utilisateur:</label>
+          <label for="inputUsername">Nom d'utilisateur:</label>
           <input
             v-on:keydown="invalid = false"
-            v-model="inputUserName"
+            v-model="inputUsername"
             type="text"
-            class="form-control"
-            id="inputUserName"
-            aria-describedby="userNameHelp"
+            aria-describedby="usernameHelp"
             placeholder="Entrez votre nom"
+            
           />
         </div>
         <div>
@@ -25,10 +20,8 @@
             v-on:keydown="invalid = false"
             v-model="inputEmail"
             type="email"
-            class="form-control"
-            id="inputEmail"
             aria-describedby="emailHelp"
-            placeholder="votre email"
+            placeholder="votre email"            
           />
         </div>
         <div>
@@ -37,20 +30,19 @@
             v-on:keydown="invalid = false"
             v-model="inputPassword"
             type="password"
-            class="form-control"
             id="inputPassword"
             aria-describedby="passwordHelp"
             placeholder="mot de passe"
+            autocomplete="new-password"
           />
         </div>
         <button type="submit">S'INSCRIRE</button>
+        
       </form>
-    </section>
-    <div>
       <router-link to="/login">
-        <button>Retour à l'écran de connection</button>
+          <button>Retour à l'écran de connection</button>
       </router-link>
-    </div>
+    </section>
   </main>
 </template>
 
@@ -61,7 +53,7 @@ export default {
   name: "Inscription",
   data() {
     return {
-      inputUserName: "",
+      inputUsername: "",
       inputEmail: "",
       inputPassword: "",
       invalid: false,
@@ -71,7 +63,7 @@ export default {
     sendDataForm() {
       axios
         .post("http://localhost:3000/api/user/signup", {
-          username: this.inputUserName,
+          username: this.inputUsername,
           email: this.inputEmail,
           password: this.inputPassword,
         })
@@ -88,5 +80,48 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+}
+.container{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+form{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+form div{
+  display:flex;
+  flex-direction: column;
+  width:100%;
+}
+input{
+  border:none;
+  padding:0.5em;
+  margin-bottom:1em;
+  width: 100%;
+  border: 0.05em solid rgba(0, 0, 0, 0.267);
+  color:#2c3e50;
+}
+button{
+  border:none;
+  background-color:#fd2d01;
+  color:white;
+  font-weight: 600;
+  width: 100%;
+  margin-bottom: 1em;
+  padding: 1em 0em 1em 0em;
+}
+h1{
+  margin-bottom: 1em;
+}
 </style>

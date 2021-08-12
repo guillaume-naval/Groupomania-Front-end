@@ -5,6 +5,7 @@ import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import NotFound from "@/views/NotFound.vue";
 import Profile from "@/views/Profile.vue";
+import Feed from "@/views/Feed.vue";
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -30,6 +31,14 @@ const routes = [
     component: Register,
     meta: {
       title: "Register",
+    },
+  },
+  {
+    path: "/feed",
+    name: "Feed",
+    component: Feed,
+    meta: {
+      title: "Fil d'actualité",
     },
   },
   {

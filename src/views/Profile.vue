@@ -11,7 +11,7 @@
       </div>
       <div class="card-body text-center">
         <div class="dropdown text-center">
-          <p>Membre depuis le {{ creation }}</p>
+          <p>Membre depuis le {{ creation.slice(0,10) }}</p>
         </div>
       </div>
       <div>
@@ -29,37 +29,47 @@ export default {
     name: "Profile",
     data() {
         return {
-            isAdmin: false,
+            isAdmin: "",
             nameCurrentUser: "",
             creation: "",
-            id: ""
+            id: "",
+            verif:"",
         }
     },
     created: function() {        
-        let id          = localStorage.getItem('userId');
+        let id = localStorage.getItem('userId');
         axios.get("http://localhost:3000/api/user/" + id, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
         .then(res => {  
             this.creation           = res.data.createdAt;
             this.isAdmin            = res.data.isAdmin;
             this.nameCurrentUser    = res.data.username;
-            this.id                 = res.data.id     
+            this.id                 = res.data.id;
+          
         })
         .catch((error)=> { console.log(error) 
         });    
     },
     methods: {
+        verified(){
+          let verif = false;
+          if (this.id == localStorage.getItem('userId')){
+            verif =true;       
+          } else {
+            verif =false;
+            
+          }
+          return verif
+        },
         localClear() {
             localStorage.clear();
             router.push({ path : "/" });
         },
-        deleteMyAccount(n) {
-            let id = n;
+        deleteMyAccount(id) {
             let confirmUserDeletion = confirm("voulez-vous vraiment supprimer votre compte ?");
             if (confirmUserDeletion == true) {
                 axios.delete("http://localhost:3000/api/user/" + id, {headers: { "Authorization": "Bearer " + localStorage.getItem("token") },})
                 .then((res)=> {
                     console.log(res);
-                    alert("Cliquez sur ok et l'utilisateur sera supprimé");
                     router.replace("http://localhost:8080/api/")
                 })
                 .catch((error) => { 
@@ -69,14 +79,9 @@ export default {
                 return 
             }
         },
-        toCommentsList() {
-            router.replace("http://localhost:8080/api/CommentsList")
-        },
-        toUsersList() {
-            router.replace("http://localhost:8080/api/UsersList")
-        }
     }
 }
+
 </script>
 
 <style>
