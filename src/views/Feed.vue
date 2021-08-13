@@ -29,7 +29,7 @@
     </div>
     <article>
         <div class="post" v-for="post in posts.slice().reverse()" :key="post.id"  >
-            <div class="post__date" @click="openPost(post.id)">
+            <div class="post__date">
                 <span>
                     Publié par <span class="post__user">{{ post.User.username }}</span>
                     le {{ post.createdAt.slice(0,10) + ' à ' + post.createdAt.slice(11,16)}}
@@ -46,21 +46,24 @@
                 <div class="post__React">React <i class="far fa-laugh-beam"></i><i class="far fa-thumbs-down"></i><i class="far fa-thumbs-up"></i></div>
             </div>
             <!-- comments section -->
-            <transition name="slide-fade-enter-active">
+            <transition name="slide-fade">
             <div class="comment_wrap" v-if="isHidden">
-                  <div  class="comment" v-for="Comment in post.Comments" :key="Comment.id">
+                  <div  class="comment" v-for="Comment in post.Comments.slice().reverse()" :key="Comment.id">
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
-                          <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}</span>                                                                                    
+                          <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}<label v-show="isAdmin || post.UserId == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)"><i class="fa fa-fw fa-trash"></i></label></span>
+                                                                                                              
                     </div>
                     <p class="comment__content"> {{ Comment.content }} </p>
                   </div>
+                  
                   <form @submit.prevent="commentPage(post.id)" class="form__comment">
                     <div>
                       <textarea class="box__comment" v-model="commentContent" type="text" placeholder="Exprimer vous..." />
                     </div>
                     <button type="submit" class="sendCom__btn">Envoyer</button>
-                  </form>  
+                  </form>
+                    
             </div>
             </transition>                            
         </div>                        
@@ -142,16 +145,13 @@ export default {
         });
     },
     commentPage(postId) {
-      let content = this.commentContent;
-        axios.post("http://localhost:3000/api/post/"+ postId +"/comment", content, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
-        .then(res => {  
-          if (res){
-            this.comments = res.data;
-            console.log(this.comments);
-          } else {
-            console.log("aucun post")
-          }
-        })
+      const formData = new FormData()
+      formData.append("content", this.commentContent.toString())
+        axios.post("http://localhost:3000/api/post/"+ postId +"/comment", formData, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
+        .then(()=> {
+                    this.commentContent = ""
+                    location.reload();
+                })
         .catch((error)=> { console.log(error) 
         })
     },
@@ -159,18 +159,32 @@ export default {
             let confirmpostDeletion = confirm("voulez-vous vraiment supprimer cette image ? Tous les commentaires associés seront également supprimés.");
             if (confirmpostDeletion == true) {
                 axios.delete("http://localhost:3000/api/post/" + postId, 
-                {
-                  headers: { 
-                        "Authorization": "Bearer " + localStorage.getItem("token") 
-                }
-                    })
+                {headers: {"Authorization": "Bearer " + localStorage.getItem("token")}
+                })
                 .then((res)=> {
                   console.log(res)
                   location.reload()
                 })
                 .catch((error) => { 
-                    location.reload();
-                    console.log(error)})
+                  location.reload();
+                  console.log(error)})
+            } else {
+                return
+            }
+    },
+    deleteComment(commentId,postId) {
+            let confirmpostDeletion = confirm("voulez-vous vraiment supprimer cette image ? Tous les commentaires associés seront également supprimés.");
+            if (confirmpostDeletion == true) {
+                axios.delete("http://localhost:3000/api/post/" + postId + "/comment/"+ commentId, 
+                {headers: {"Authorization": "Bearer " + localStorage.getItem("token")}
+                })
+                .then((res)=> {
+                  console.log(res)
+                  location.reload()
+                })
+                .catch((error) => { 
+                  location.reload();
+                  console.log(error)})
             } else {
                 return
             }
@@ -184,10 +198,14 @@ export default {
 </script>
 
 <style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.slide-fade-enter-active {
+  transition: all .3s ease;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.slide-fade-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter-from, .slide-fade-leave-to {
+  transform: translateY(-20%);
   opacity: 0;
 }
 .post__subsection{
@@ -209,7 +227,6 @@ export default {
 .post__comments i,.post__React i{
   margin-left:0.5em;
 }
-
 .sendCom__btn{
   display: flex;
   border:none;
@@ -223,20 +240,21 @@ export default {
   flex-direction: column;
   background-color: rgba(184, 184, 184, 0.151);
   border-radius: 2em;
-  margin-bottom:1em;
+  margin-bottom:0.5em;
 }
 .comment__user{
   font-weight:900;
-  margin-left:2em;
+  margin-left:1.5em;
 }
 .comment__hour{
+  position: relative;
   margin-right:2em;
   font-size:0.8em;
   color:lightgrey;
 }
 .comment__content{
   margin-left:2em;
-  padding:0.5em 0em 0.5em 0em;
+  padding:0.2em 0em 0.5em 0em;
 }
 .comment__date{
   display:flex;
@@ -295,7 +313,6 @@ textarea::-webkit-scrollbar-thumb {
   background-color: #aaaaaa;
 }
 .post__btn{
-  position:relative;
   z-index: 3;
   border:none;
   background: #fd2b01ab;
@@ -309,6 +326,15 @@ textarea::-webkit-scrollbar-thumb {
 .label__post{
   display:flex;
   justify-content: space-between;
+  color:#fd2b01ab;
+  cursor:pointer;
+  font-style: normal;
+}
+.delete__comment i{
+  position:absolute;
+  font-size:1.5em;
+  z-index: 5;
+  bottom:-0.1em;
   color:#fd2b01ab;
   cursor:pointer;
   font-style: normal;
