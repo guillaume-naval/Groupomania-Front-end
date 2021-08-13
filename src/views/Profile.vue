@@ -16,7 +16,7 @@
       </div>
       <div>
           <p class="italic">Depuis cette page vous pouvez supprimer votre compte. La suppression de votre compte entrainera également la suppression de tous les commentaires et les images que vous avez postés.</p>
-          <button @click="deleteMyAccount(id)">SUPPRIMER VOTRE COMPTE<img src="../assets/trash-solid.svg" alt="trash" style="width:25px"></button>
+          <button @click="deleteMyAccount(id)">SUPPRIMER VOTRE COMPTE</button>
       </div>
     </section>
   </main>

@@ -1,19 +1,25 @@
 <template>
+<header>
   <div class="logo">
-    <div v-if= "this.currentUser !== null">
-      <router-link to="/feed"><img id="logo" alt="Vue logo" src="./assets/logo.png" /></router-link>
-    </div >
-    <div v-else>
-      <router-link  to="/login"><img id="logo" alt="Vue logo" src="./assets/logo.png" /></router-link> 
-    </div>
+    <img id="logo" alt="Vue logo" src="./assets/logo.png" />
   </div>
+  <NavBar></NavBar>
+</header>
 <router-view />
 </template>
 
 <script>
+import NavBar from "./components/NavBar.vue";
 export default {
   name: "App",
-  components: {},
+  data(){
+    return{
+    token:localStorage.getItem("token")
+    }
+  },
+  components: {
+    NavBar
+  },
 };
 </script>
 
@@ -24,6 +30,11 @@ export default {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
+}
+header{
+  display: flex;
+  flex-direction: column;
 }
 .logo{
   display:flex;
@@ -34,7 +45,7 @@ export default {
   margin-bottom: 2em;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;

@@ -6,6 +6,7 @@ import Register from "@/views/Register.vue";
 import NotFound from "@/views/NotFound.vue";
 import Profile from "@/views/Profile.vue";
 import Feed from "@/views/Feed.vue";
+import Post from "@/views/Post.vue";
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -55,6 +56,14 @@ const routes = [
     component: Profile,
     meta: {
       title: "Profil",
+    },
+  },
+  {
+    path: "/post",
+    name: "Post",
+    component: Post,
+    meta: {
+      title: "Post",
     },
   },
 ];
