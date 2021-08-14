@@ -51,7 +51,8 @@
                   <div  class="comment" v-for="Comment in post.Comments.slice().reverse()" :key="Comment.id">
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
-                          <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}<label v-show="isAdmin || post.UserId == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)"><i class="fa fa-fw fa-trash"></i></label></span>
+                          <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}
+                          <label v-show="isAdmin || Comment.UserId == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)"><i class="fa fa-fw fa-trash"></i></label></span>
                                                                                                               
                     </div>
                     <p class="comment__content"> {{ Comment.content }} </p>
@@ -82,7 +83,7 @@ export default {
             isAdmin: false,
             posts: [],
             comments: [],
-            id: "",                 
+            id: localStorage.getItem('userId'),                 
             username: "",               
             creation: "",
             inputContent: "",
@@ -173,7 +174,7 @@ export default {
             }
     },
     deleteComment(commentId,postId) {
-            let confirmpostDeletion = confirm("voulez-vous vraiment supprimer cette image ? Tous les commentaires associés seront également supprimés.");
+            let confirmpostDeletion = confirm("Voulez-vous vraiment supprimer ce commentaire");
             if (confirmpostDeletion == true) {
                 axios.delete("http://localhost:3000/api/post/" + postId + "/comment/"+ commentId, 
                 {headers: {"Authorization": "Bearer " + localStorage.getItem("token")}

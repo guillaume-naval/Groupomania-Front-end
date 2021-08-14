@@ -1,20 +1,22 @@
 
 <template>
     <main>
-      <div>
-        <h1>Votre Profil</h1>
-      </div>
+      
     <section >
-      <div>
-          <p>Bonjour {{ nameCurrentUser }} !</p>
-          <a @click="localClear"><img id="signout" src="../assets/door-open-solid.svg" alt="sign-out" /></a>
+      <h1>Bonjour {{nameCurrentUser}} !</h1>
+      <div class="profile__img">
+        <img :src="post.imageUrl" v-if="post.imageUrl !== ''"  alt="image postée" />
       </div>
-      <div class="card-body text-center">
-        <div class="dropdown text-center">
-          <p>Membre depuis le {{ creation.slice(0,10) }}</p>
-        </div>
+      <div class="profile__date">
+        <h2>Informations</h2>
+        <p>Membre depuis le {{ creation.slice(0,10) }}</p>
+      </div>
+      <div class="profile__bio">
+        <h2>Bio</h2>
+        <p>{{ bio }}</p>
       </div>
       <div>
+          <h2>Suprimer le compte</h2>
           <p class="italic">Depuis cette page vous pouvez supprimer votre compte. La suppression de votre compte entrainera également la suppression de tous les commentaires et les images que vous avez postés.</p>
           <button @click="deleteMyAccount(id)">SUPPRIMER VOTRE COMPTE</button>
       </div>
@@ -33,7 +35,7 @@ export default {
             nameCurrentUser: "",
             creation: "",
             id: "",
-            verif:"",
+            bio:"",
         }
     },
     created: function() {        
@@ -44,22 +46,13 @@ export default {
             this.isAdmin            = res.data.isAdmin;
             this.nameCurrentUser    = res.data.username;
             this.id                 = res.data.id;
+            this.bio                = res.data.bio;
           
         })
         .catch((error)=> { console.log(error) 
         });    
     },
     methods: {
-        verified(){
-          let verif = false;
-          if (this.id == localStorage.getItem('userId')){
-            verif =true;       
-          } else {
-            verif =false;
-            
-          }
-          return verif
-        },
         localClear() {
             localStorage.clear();
             router.push({ path : "/" });
@@ -85,6 +78,24 @@ export default {
 </script>
 
 <style>
+h1{
+  font-size: 2em;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.profile__date{
+  margin-bottom:1em;
+}
+.profile__bio{
+  margin-bottom:1em;
+}
+h2{
+  font-size: 1.2em;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+main{
+  margin:auto;
+  padding:0em 2em 0em 2em;
+}
 .italic{
   font-style: italic;
   font-size:0.8em;

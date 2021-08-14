@@ -47,6 +47,7 @@ a{
     justify-content: center;
     width: 100%;
     margin-bottom: 3em;
+    box-shadow: 0 1.2em 1.2em -0.9em rgba(128, 128, 128, 0.185);
 }
 .navbar a {
     float: left;
