@@ -13,8 +13,8 @@
             v-model="inputUsername"
             type="text"
             aria-describedby="usernameHelp"
-            placeholder="Entrez votre nom"
-            
+            placeholder="Votre pseudo"  
+            minlength="4"
           />
         </div>
         <div>
@@ -23,7 +23,7 @@
             v-model="inputEmail"
             type="email"
             aria-describedby="emailHelp"
-            placeholder="votre email"            
+            placeholder="Votre email"            
           />
         </div>
         <div>
@@ -33,7 +33,7 @@
             type="password"
             id="inputPassword"
             aria-describedby="passwordHelp"
-            placeholder="mot de passe"
+            placeholder="Votre mot de passe"
             autocomplete="new-password"
           />
         </div>
@@ -124,7 +124,6 @@ form{
 form div{
   display:flex;
   flex-direction: column;
-  width:100%;
 }
 input{
   outline: none;
@@ -132,7 +131,6 @@ input{
   border:none;
   padding:0.5em;
   margin-bottom:1em;
-  width: 100%;
   border: 0.05em solid rgba(0, 0, 0, 0.267);
   color:#2c3e50;
 }
@@ -145,7 +143,6 @@ button{
   background-color:#fd2d01;
   color:white;
   font-weight: 600;
-  width: 100%;
   margin-bottom: 1em;
   padding: 1em 0em 1em 0em;
 }
