@@ -35,13 +35,15 @@
                   <img v-if="post.User.imageUrl" :src="post.User.imageUrl"   alt="image user" />
                 </div>
                 <div >
+                  
                     <div class="post__user">{{ post.User.username }}</div>
                     <div class="post__hour"> le {{ post.createdAt.slice(0,10) + ' à ' + post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
-                <label v-show="isAdmin || post.UserId == CurrentUserId" class="label__post" @click="deletepost(post.id)">
-                  <i class="fa fa-fw fa-trash"></i>Supprimer
-                </label>                                                                                     
+              <div class="icons__post">
+              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
+                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
+              </div>                                                                                          
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
             <div class="post__img" @click="openPost(post.id)" >
@@ -59,7 +61,7 @@
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
                           <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}
-                          <label v-show="isAdmin || Comment.UserId == CurrentUserId" class="delete__comment" @click="deleteComment(Comment.id,post.id)">
+                          <label v-show="isAdmin || Comment.UserId == userId" class="delete__comment" @click="deleteComment(Comment.id,post.id)">
                             <i class="fa fa-fw fa-trash"></i>
                             </label>
                           </span>                                                                            
@@ -88,15 +90,18 @@ export default {
     name: "Feed",
     data() {
         return {
-            posts: [],
-            CurrentUserId:localStorage.getItem('userId'),                 
+            posts:[],            
             inputContent: "",
             commentContent:"",
             file:"",
             newImage: "",
             isHidden: false,
-            isAdmin:localStorage.getItem("isAdmin"),
+            userId:JSON.parse(localStorage.getItem("userId")),
+            isAdmin:JSON.parse(localStorage.getItem("isAdmin")),
         }
+    },
+    computed: {
+      
     },
     created: function() {
         axios.get("http://localhost:3000/api/post/", { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
@@ -110,7 +115,9 @@ export default {
         }); 
     },
     methods: {
-      
+          lsGetItem(key) {
+    return JSON.parse(localStorage.getItem(key));
+    },  
     openPost(postId){
       localStorage.setItem("postId", postId);
       router.push({ path: '/post' }) 
@@ -190,6 +197,16 @@ export default {
 </script>
 
 <style scoped>
+@media screen and (min-width: 700px) {
+  .post{
+    width:35em;
+    margin:auto;
+  }
+  form{
+     width:35em;
+     margin:auto;
+  }
+}
 .post__hour{
   font-style: italic;
 }
@@ -305,13 +322,17 @@ h1{
 .post__bar{
   display:flex;
 }
-.fa-trash{
+.fa-trash,.fa-edit{
   color:#fd2b01ab;
   cursor:pointer;
-  font-size:1.2em;
+  font-size:1.4em;
+  margin-right:0.2em;
 }
-.fa-trash:hover{
+.fa-trash:hover,.fa-edit:hover{
   color:#fd2b01ab;
+}
+.icons__post{
+  display: flex;
 }
 textarea::-webkit-scrollbar {
     width: 1em;

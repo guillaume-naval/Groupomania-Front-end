@@ -181,6 +181,25 @@ export default {
 </script>
 
 <style scoped>
+@media screen and (min-width: 850px) {
+  main{
+    display: flex;
+    justify-content: center;
+    width:50em;
+  }
+  form{
+    width:20em;
+  }
+  .delete__account{
+    max-width: 20em;
+  }
+  .profile__date{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+}
 input, textarea{
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   outline: none;
@@ -191,6 +210,10 @@ input, textarea{
   width: 100%;
   border: 0.05em solid rgba(0, 0, 0, 0.267);
   color:#2c3e50;
+}
+.profile__pic{
+  display: flex;
+  justify-content: center;
 }
 input:focus{
   box-shadow: 0 0 0.2em 0.1em #fd2b017a;
@@ -208,11 +231,19 @@ button{
 .img-upload>input {
   display:none;
 }
+.img-upload{
+  position:absolute;
+  width:10em;
+}
+.profile__pic{
+  position:relative;
+}
 .fa-edit{
   position:absolute;
   font-size:2em;
-  right:3em;
+  right:0em;
   z-index: 2;
+  color:#fa7a60;
 }
 .delete__account{
   font-size:0.8em;
@@ -225,7 +256,6 @@ button{
   margin-bottom:2em;
 }
 .profile__img{
-  position:relative;
   margin:0 auto;
   width:10em;
   height:10em;

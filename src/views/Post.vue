@@ -3,18 +3,21 @@
     <main>
     <section >
       <article>
-        <div class="post">
+        <div class="post" v-if="post.User">
             <div class="post__header">
               <div class="post__date">
                 <div class="profile__img" >
-                  <img v-if="post.User?.imageUrl" :src="post.User.imageUrl"   alt="image user" />
+                  <img v-if="post.User.imageUrl" :src="post.User.imageUrl"   alt="image user" />
                 </div>
                 <div >
-                    <div class="post__user">{{ post.User?.username }}</div>
+                    <div class="post__user">{{ post.User.username }}</div>
                     <div class="post__hour" v-if ="post.createdAt"> le {{ post.createdAt.slice(0,10) + ' à ' + this.post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
-                <label v-show="isAdmin || post.UserId == id" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i>Supprimer</label>                                                                                     
+              <div class="icons__post">
+              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
+                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
+              </div>
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
             <div class="post__img" @click="openPost(post.id)" >
@@ -33,7 +36,7 @@
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
                           <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}
-                          <label v-show="isAdmin || Comment.UserId == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)"><i class="fa fa-fw fa-trash"></i></label></span>                                                                              
+                          <label v-show="isAdmin || Comment.UserId == userId" class="delete__comment" @click="deleteComment(Comment.id,post.id)"><i class="fa fa-fw fa-trash"></i></label></span>                                                                              
                     </div>
                     <p class="comment__content"> {{ Comment.content }} </p>
                   </div>
@@ -60,12 +63,12 @@ export default {
     name: "OnePost",
     data() {
         return {
-            isAdmin:localStorage.getItem('isAdmin'),
             post: [],
             inputContent: "",
             commentContent:"",
             isHidden: false,
-            id:localStorage.getItem('userId')
+            userId:JSON.parse(localStorage.getItem("userId")),
+            isAdmin:JSON.parse(localStorage.getItem("isAdmin")),
         }
     },
     created: function() {  
@@ -120,6 +123,23 @@ export default {
                 return
             }
     },
+    modifypost(postId) {
+            let confirmpostDeletion = confirm("voulez-vous vraiment supprimer cette image ? Tous les commentaires associés seront également supprimés.");
+            if (confirmpostDeletion == true) {
+                axios.put("http://localhost:3000/api/post/" + postId, 
+                {headers: {"Authorization": "Bearer " + localStorage.getItem("token")}
+                })
+                .then((res)=> {
+                  console.log(res)
+                  location.reload()
+                })
+                .catch((error) => { 
+                  location.reload();
+                  console.log(error)})
+            } else {
+                return
+            }
+    },
     deleteComment(commentId,postId) {
             let confirmpostDeletion = confirm("Voulez-vous vraiment supprimer ce commentaire ?");
             if (confirmpostDeletion == true) {
@@ -143,6 +163,15 @@ export default {
 </script>
 
 <style scoped>
+@media screen and (min-width: 850px) {
+  section{
+    display: flex;
+    justify-content: center;
+  }
+  .post{
+    width:35em;
+  }
+}
 .post__date{
   display:flex;
   justify-content: column;
@@ -262,13 +291,17 @@ h1{
 .post__bar{
   display:flex;
 }
-.fa-trash{
+.fa-trash,.fa-edit{
   color:#fd2b01ab;
   cursor:pointer;
-  font-size:1.2em;
+  font-size:1.4em;
+  margin-right:0.2em;
 }
-.fa-trash:hover{
+.fa-trash:hover,.fa-edit:hover{
   color:#fd2b01ab;
+}
+.icons__post{
+  display: flex;
 }
 textarea::-webkit-scrollbar {
     width: 1em;
