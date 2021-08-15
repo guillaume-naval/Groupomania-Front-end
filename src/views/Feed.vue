@@ -29,11 +29,16 @@
     </div>
     <article>
         <div class="post" v-for="post in posts.slice().reverse()" :key="post.id"  >
-            <div class="post__date">
-                <span>
-                    Publié par <span class="post__user">{{ post.User.username }}</span>
-                    le {{ post.createdAt.slice(0,10) + ' à ' + post.createdAt.slice(11,16)}}
-                </span>
+            <div class="post__header">
+              <div class="post__date">
+                <div class="profile__img">
+                  <img v-if="post.User.imageUrl" :src="post.User.imageUrl"   alt="image user" />
+                </div>
+                <div >
+                    <div class="post__user">{{ post.User.username }}</div>
+                    <div class="post__hour"> le {{ post.createdAt.slice(0,10) + ' à ' + post.createdAt.slice(11,16)}}</div>
+                </div>
+              </div>
                 <label v-show="isAdmin || post.UserId == id" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i>Supprimer</label>                                                                                     
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
@@ -52,12 +57,14 @@
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
                           <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}
-                          <label v-show="isAdmin || Comment.UserId == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)"><i class="fa fa-fw fa-trash"></i></label></span>
+                          <label v-show="isAdmin || Comment.User.id == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)">
+                            <i class="fa fa-fw fa-trash"></i>
+                            </label>
+                          </span>
                                                                                                               
                     </div>
                     <p class="comment__content"> {{ Comment.content }} </p>
                   </div>
-                  
                   <form @submit.prevent="commentPage(post.id)" class="form__comment">
                     <div>
                       <textarea class="box__comment" v-model="commentContent" type="text" placeholder="Exprimer vous..." />
@@ -80,21 +87,17 @@ export default {
     name: "Feed",
     data() {
         return {
-            isAdmin: false,
             posts: [],
-            comments: [],
             id: localStorage.getItem('userId'),                 
-            username: "",               
-            creation: "",
             inputContent: "",
             commentContent:"",
             file:"",
             newImage: "",
             isHidden: false,
+            isAdmin:localStorage.getItem('isAdmin'),
         }
     },
-    created: function() {
-      let id = localStorage.getItem('userId');     
+    created: function() {   
         axios.get("http://localhost:3000/api/post/", { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
         .then(res => {  
           if (res){
@@ -103,19 +106,7 @@ export default {
           } else {
             console.log("aucun post")
           }
-        })
-        .catch((error)=> { console.log(error) 
-        })
-        axios.get("http://localhost:3000/api/user/" + id, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
-        .then(res => {  
-            console.log(res)
-            this.id                 = res.data.id;
-            this.username           = res.data.username;
-            this.creation           = res.data.createdAt;
-            this.isAdmin            = res.data.isAdmin;
-        })
-        .catch((error)=> { console.log(error) 
-        });        
+        }); 
     },
     methods: {
     openPost(postId){
@@ -198,7 +189,30 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.post__hour{
+  font-style: italic;
+}
+.post__date{
+  display:flex;
+}
+.post__header{
+  display:flex;
+  justify-content: space-between;
+  font-size:0.8em;
+  color:rgb(255, 179, 179);
+  
+}
+.profile__img{
+  width:3em;
+  height:3em;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right:1em;
+}
+.profile__img img{
+  height:100%;
+}
 .slide-fade-enter-active {
   transition: all .3s ease;
 }
@@ -275,14 +289,9 @@ h1{
 .post__user{
   font-weight: 900;
   font-size: 1.1em;
+  margin-bottom: 0.2em;
 }
-.post__date{
-  display:flex;
-  justify-content: space-between;
-  font-size:0.8em;
-  color:rgb(255, 179, 179);
-  font-style: italic;
-}
+
 .post__content{
   font-size:1.2em;
   margin:1em 0em 1em 0em;

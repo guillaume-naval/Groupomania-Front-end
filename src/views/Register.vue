@@ -1,12 +1,15 @@
 <template>
   <main class="container">
     <section>
+      <h1>INSCRIPTION</h1>
+      <div v-show="invalid!=null" class="invalid_txt" key="invalid">
+          <p>{{invalid}}</p>
+      </div>
       <form @submit.prevent="sendDataForm(event)" >
-        <h1>INSCRIPTION</h1>
+        
         <div>
-          <label for="inputUsername">Nom d'utilisateur:</label>
+          <label for="inputUsername">Nom d'utilisateur</label>
           <input
-            v-on:keydown="invalid = false"
             v-model="inputUsername"
             type="text"
             aria-describedby="usernameHelp"
@@ -15,9 +18,8 @@
           />
         </div>
         <div>
-          <label for="inputEmail">Email:</label>
+          <label for="inputEmail">Email</label>
           <input
-            v-on:keydown="invalid = false"
             v-model="inputEmail"
             type="email"
             aria-describedby="emailHelp"
@@ -25,9 +27,8 @@
           />
         </div>
         <div>
-          <label for="inputPassword">Choisissez un Mot de passe:</label>
+          <label for="inputPassword">Mot de passe</label>
           <input
-            v-on:keydown="invalid = false"
             v-model="inputPassword"
             type="password"
             id="inputPassword"
@@ -36,11 +37,12 @@
             autocomplete="new-password"
           />
         </div>
-        <button type="submit">S'INSCRIRE</button>
+        <button type="submit">S'inscrire</button>
         
       </form>
+        
       <router-link to="/login">
-          <button>Retour à l'écran de connection</button>
+          <button>Se connecter</button>
       </router-link>
     </section>
   </main>
@@ -56,13 +58,29 @@ export default {
       inputUsername: "",
       inputEmail: "",
       inputPassword: "",
-      invalid: false,
+      invalid: "",
     };
   },
   methods: {
     sendDataForm() {
-      axios
-        .post("http://localhost:3000/api/user/signup", {
+      if ( !this.inputUsername || !this.inputEmail || !this.inputPassword ) {
+                return this.invalid = true;
+      }
+      const emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      const passRegex = /^(?=.*\d).{4,15}$/
+      if (this.inputEmail == null || this.inputUsername == null || this.inputPassword == null) {
+        return this.invalid='Un des champs est invalide';
+      }
+      if (this.inputUsername.length >= 13 || this.inputUsername.length <= 4) {
+        return this.invalid='Pseudo invalide (doit comporter 4 à 12 caractères)';
+      }
+      if (!emailRegex.test(this.inputEmail)) {
+        return this.invalid="L'email n'est pas valide";
+      }
+      if (!passRegex.test(this.inputPassword)) {
+        return this.invalid="Le mot de passe n'est pas valide (doit comporter 4 à 15 caractères et inclure au moins 1 chiffre)";
+      }
+      axios.post("http://localhost:3000/api/user/signup", {
           username: this.inputUsername,
           email: this.inputEmail,
           password: this.inputPassword,
@@ -92,6 +110,10 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+}
+section{
+    width:15em;
 }
 form{
   display:flex;
@@ -105,6 +127,8 @@ form div{
   width:100%;
 }
 input{
+  outline: none;
+  border-radius: 2em;
   border:none;
   padding:0.5em;
   margin-bottom:1em;
@@ -112,7 +136,11 @@ input{
   border: 0.05em solid rgba(0, 0, 0, 0.267);
   color:#2c3e50;
 }
+input:focus{
+  box-shadow: 0 0 0.2em 0.1em #fd2b017a;
+}
 button{
+  border-radius: 2em;
   border:none;
   background-color:#fd2d01;
   color:white;
@@ -122,6 +150,12 @@ button{
   padding: 1em 0em 1em 0em;
 }
 h1{
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+}
+.invalid_txt{
+  color:red;
+  font-style: italic;
+  font-size:0.9em;
+  margin-bottom:0.5em;
 }
 </style>

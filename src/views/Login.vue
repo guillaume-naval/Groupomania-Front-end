@@ -80,9 +80,14 @@ input{
   width: 100%;
   border: 0.05em solid rgba(0, 0, 0, 0.267);
   color:#2c3e50;
+  border-radius: 2em;
+  outline:none;
 }
 .form-container{
   width:80%;
+}
+input:focus{
+  box-shadow: 0 0 0.2em 0.1em #fd2b017a;
 }
 button{
   border:none;
@@ -92,6 +97,7 @@ button{
   padding:1em;
   width: 100%;
   margin-bottom: 1em;
+  border-radius: 2em;
 }
 .invalid{
   display:flex;
