@@ -1,3 +1,4 @@
+<!-- Fichier central de l'qpplication Vue.-->
 <template>
 <header>
   <div class="logo">

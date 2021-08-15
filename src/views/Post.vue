@@ -16,7 +16,7 @@
               </div>
               <div class="icons__post">
               <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
-                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
+              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
               </div>
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>

@@ -65,7 +65,7 @@
       <!-- Supprimer son compte -->
       <div class="delete__section">
           <p class="italic">Depuis cette page vous pouvez supprimer votre compte. La suppression de votre compte entrainera également la suppression de tous les commentaires et les images que vous avez postés.</p>
-          <button class="delete__account" @click="deleteMyAccount(id)">SUPPRIMER VOTRE COMPTE</button>
+          <button class="delete__account" @click="deleteMyAccount(userId)">SUPPRIMER VOTRE COMPTE</button>
       </div>
     </section>
     
@@ -84,7 +84,8 @@ export default {
             inputPassword: "",
             inputBio:"",
             invalid: "",
-            user:[]
+            user:[],
+            userId:JSON.parse(localStorage.getItem('userId')),
         }
     },
     created: function() { 

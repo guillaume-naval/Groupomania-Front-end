@@ -54,7 +54,7 @@
                 <div class="post__comments" @click="isHidden= !isHidden">Commenter<i class="far fa-comment-alt"></i></div>
                 <div class="post__React">React <i class="far fa-laugh-beam"></i><i class="far fa-thumbs-down"></i><i class="far fa-thumbs-up"></i></div>
             </div>
-            <!-- comments section -->
+            <!-- section des commentaires -->
             <transition name="slide-fade">
             <div class="comment_wrap" v-if="isHidden">
                   <div  class="comment" v-for="Comment in post.Comments.slice().reverse()" :key="Comment.id">
