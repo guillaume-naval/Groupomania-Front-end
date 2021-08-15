@@ -39,7 +39,9 @@
                     <div class="post__hour"> le {{ post.createdAt.slice(0,10) + ' à ' + post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
-                <label v-show="isAdmin || post.UserId == id" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i>Supprimer</label>                                                                                     
+                <label v-show="isAdmin || post.UserId == CurrentUserId" class="label__post" @click="deletepost(post.id)">
+                  <i class="fa fa-fw fa-trash"></i>Supprimer
+                </label>                                                                                     
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
             <div class="post__img" @click="openPost(post.id)" >
@@ -57,11 +59,10 @@
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
                           <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}
-                          <label v-show="isAdmin || Comment.User.id == id" class="delete__comment" @click="deleteComment(Comment.id,post.id)">
+                          <label v-show="isAdmin || Comment.UserId == CurrentUserId" class="delete__comment" @click="deleteComment(Comment.id,post.id)">
                             <i class="fa fa-fw fa-trash"></i>
                             </label>
-                          </span>
-                                                                                                              
+                          </span>                                                                            
                     </div>
                     <p class="comment__content"> {{ Comment.content }} </p>
                   </div>
@@ -88,16 +89,16 @@ export default {
     data() {
         return {
             posts: [],
-            id: localStorage.getItem('userId'),                 
+            CurrentUserId:localStorage.getItem('userId'),                 
             inputContent: "",
             commentContent:"",
             file:"",
             newImage: "",
             isHidden: false,
-            isAdmin:localStorage.getItem('isAdmin'),
+            isAdmin:localStorage.getItem("isAdmin"),
         }
     },
-    created: function() {   
+    created: function() {
         axios.get("http://localhost:3000/api/post/", { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
         .then(res => {  
           if (res){
@@ -109,6 +110,7 @@ export default {
         }); 
     },
     methods: {
+      
     openPost(postId){
       localStorage.setItem("postId", postId);
       router.push({ path: '/post' }) 
@@ -158,7 +160,6 @@ export default {
                   location.reload()
                 })
                 .catch((error) => { 
-                  location.reload();
                   console.log(error)})
             } else {
                 return
@@ -174,8 +175,7 @@ export default {
                   console.log(res)
                   location.reload()
                 })
-                .catch((error) => { 
-                  location.reload();
+                .catch((error) => {
                   console.log(error)})
             } else {
                 return

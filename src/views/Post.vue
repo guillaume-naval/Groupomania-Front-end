@@ -3,18 +3,18 @@
     <main>
     <section >
       <article>
-        <div class="post" >
+        <div class="post">
             <div class="post__header">
               <div class="post__date">
-                <div class="profile__img">
-                  <img v-if="post.User.imageUrl" :src="post.User.imageUrl"   alt="image user" />
+                <div class="profile__img" >
+                  <img v-if="post.User?.imageUrl" :src="post.User.imageUrl"   alt="image user" />
                 </div>
                 <div >
-                    <div class="post__user">{{ post.User.username }}</div>
-                    <div class="post__hour"> le {{ this.post.createdAt.slice(0,10) + ' à ' + this.post.createdAt.slice(11,16)}}</div>
+                    <div class="post__user">{{ post.User?.username }}</div>
+                    <div class="post__hour" v-if ="post.createdAt"> le {{ post.createdAt.slice(0,10) + ' à ' + this.post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
-                <label v-show="isAdmin || this.post.UserId == id" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i>Supprimer</label>                                                                                     
+                <label v-show="isAdmin || post.UserId == id" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i>Supprimer</label>                                                                                     
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
             <div class="post__img" @click="openPost(post.id)" >
@@ -29,7 +29,7 @@
             <!-- comments section -->
             <transition name="slide-fade">
             <div class="comment_wrap" v-if="isHidden">
-                  <div  class="comment" v-for="Comment in this.post.Comments.slice().reverse()" :key="Comment.id">
+                  <div  class="comment" v-for="Comment in this.post?.Comments?.slice().reverse()" :key="Comment.id">
                     <div class="comment__date">
                           <span class="comment__user">{{ Comment.User.username }}</span>
                           <span class="comment__hour">{{ Comment.createdAt.slice(0,10) + ' à ' + Comment.createdAt.slice(11,16)}}
@@ -84,16 +84,17 @@ export default {
         });  
     },
     methods: {
-        log(item) {
-          console.log(item)
+          openPost(postId){
+          localStorage.setItem("postId", postId);
+          router.push({ path: '/post' }) 
         },
         localClear() {
             localStorage.clear();
             router.push({ path : "/" });
         },
         commentPage(postId) {
-      const formData = new FormData()
-      formData.append("content", this.commentContent.toString())
+        const formData = new FormData()
+        formData.append("content", this.commentContent.toString())
         axios.post("http://localhost:3000/api/post/"+ postId +"/comment", formData, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
         .then(()=> {
                     this.commentContent = ""
