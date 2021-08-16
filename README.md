@@ -5,6 +5,7 @@
 * Il vous faudra avoir installé sur votre machine:
     * Node.js
     * MySQL
+    * le back-end du projet
 
 ## DANS LE DOSSIER FRONTEND
 
@@ -24,4 +25,3 @@ npm run serve
 - Vous voyez l'écran de connexion à l'application. Allez dans la rubrique INSCRIPTION, inscrivez l'utilisateur de votre choix en suivant les instructions, puis connectez-vous.
 
 - Pour avoir le privilège d'Adminstrateur, veuillez rentrer l'information directement dans la base
-- 
