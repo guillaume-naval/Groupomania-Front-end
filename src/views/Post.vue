@@ -3,25 +3,25 @@
     <main>
     <section >
       <article>
-        <div class="post" v-if="post.User">
+        <div class="post">
             <div class="post__header">
               <div class="post__date">
                 <div class="profile__img" >
-                  <img v-if="post.User.imageUrl" :src="post.User.imageUrl"   alt="image user" />
+                  <img v-if="post.User?.imageUrl" :src="post.User?.imageUrl"   alt="image user" />
                 </div>
                 <div >
-                    <div class="post__user">{{ post.User.username }}</div>
+                    <div class="post__user">{{ post.User?.username }}</div>
                     <div class="post__hour" v-if ="post.createdAt"> le {{ post.createdAt.slice(0,10) + ' à ' + this.post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
               <div class="icons__post">
-              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
-              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
+                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
+                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                 
               </div>
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
             <div class="post__img" @click="openPost(post.id)" >
-                <img :src="post.imageUrl" v-if="post.imageUrl !== ''"  alt="image postée" />
+                <img :src="post?.imageUrl" v-if="post?.imageUrl !== null"  alt="image postée" />
             </div>
             
             <div class="post__subsection">
@@ -87,9 +87,9 @@ export default {
         });  
     },
     methods: {
-          openPost(postId){
-          localStorage.setItem("postId", postId);
-          router.push({ path: '/post' }) 
+        openPost(postId){
+        localStorage.setItem("postId", postId);
+        router.push({ path: '/post' }) 
         },
         localClear() {
             localStorage.clear();
