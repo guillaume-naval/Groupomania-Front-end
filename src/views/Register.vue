@@ -38,12 +38,12 @@
           />
         </div>
         <button type="submit">S'inscrire</button>
-        
+        <router-link to="/login">
+        Déjà inscrit ? S'identifier
+        </router-link>
       </form>
         
-      <router-link to="/login">
-          <button>Se connecter</button>
-      </router-link>
+     
     </section>
   </main>
 </template>
@@ -63,16 +63,14 @@ export default {
   },
   methods: {
     sendDataForm() {
-      if ( !this.inputUsername || !this.inputEmail || !this.inputPassword ) {
-                return this.invalid = true;
-      }
-      const emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      
+      const emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|("."+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       const passRegex = /^(?=.*\d).{4,15}$/
-      if (this.inputEmail == null || this.inputUsername == null || this.inputPassword == null) {
-        return this.invalid='Un des champs est invalide';
+      if ( !this.inputUsername || !this.inputEmail || !this.inputPassword ) {
+                return this.invalid='Veuillez remplir tous les champs';
       }
       if (this.inputUsername.length >= 13 || this.inputUsername.length <= 4) {
-        return this.invalid='Pseudo invalide (doit comporter 4 à 12 caractères)';
+        return this.invalid='Pseudo invalide (doit comporter 5 à 12 caractères)';
       }
       if (!emailRegex.test(this.inputEmail)) {
         return this.invalid="L'email n'est pas valide";
@@ -80,6 +78,10 @@ export default {
       if (!passRegex.test(this.inputPassword)) {
         return this.invalid="Le mot de passe n'est pas valide (doit comporter 4 à 15 caractères et inclure au moins 1 chiffre)";
       }
+      if (this.inputEmail == '' || this.inputUsername == '' || this.inputPassword == '') {
+        return this.invalid='Un des champs est invalide';
+      }
+      
       axios.post("http://localhost:3000/api/user/signup", {
           username: this.inputUsername,
           email: this.inputEmail,
@@ -110,26 +112,29 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
 }
 section{
-    width:15em;
+  margin-top:3em;
+  width:20em;
 }
 form{
   display:flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width:100%;
 }
 form div{
   display:flex;
   flex-direction: column;
+  width:100%;
 }
 input{
   outline: none;
   border-radius: 2em;
   border:none;
   padding:0.5em;
+  width:100%;
   margin-bottom:1em;
   border: 0.05em solid rgba(0, 0, 0, 0.267);
   color:#2c3e50;
@@ -143,6 +148,7 @@ button{
   background-color:#fd2d01;
   color:white;
   font-weight: 600;
+  width: 100%;
   margin-bottom: 1em;
   padding: 1em 0em 1em 0em;
 }

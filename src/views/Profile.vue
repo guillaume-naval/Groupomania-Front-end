@@ -100,9 +100,6 @@ export default {
         });    
     },
     methods: {
-        onInput(e) {
-          console.log(e.target.innerText);
-        },
         localClear() {
             localStorage.clear();
             router.push({ path : "/" });
@@ -125,17 +122,17 @@ export default {
           let id = localStorage.getItem('userId');
           const emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
           const passRegex = /^(?=.*\d).{4,15}$/
-          if (this.inputUsername){
+          if (this.inputUsername!=''){
             if (this.inputUsername.length >= 13 || this.inputUsername.length <= 4) {
               return this.invalid='Pseudo invalide (doit comporter 4 à 12 caractères)';
             }
           }
-          if (this.inputEmail){
+          if (this.inputEmail!=''){
             if (!emailRegex.test(this.inputEmail)) {
             return this.invalid="L'email n'est pas valide";
             }
           }
-          if (this.inputPassword){
+          if (this.inputPassword!='' || this.inputPassword){
             if (!passRegex.test(this.inputPassword)) {
               return this.invalid="Le mot de passe n'est pas valide (doit comporter 4 à 15 caractères et inclure au moins 1 chiffre)";
             }
@@ -167,7 +164,7 @@ export default {
                 axios.delete("http://localhost:3000/api/user/" + id, {headers: { "Authorization": "Bearer " + localStorage.getItem("token") },})
                 .then((res)=> {
                     console.log(res);
-                    router.replace("http://localhost:8080/login")
+                    router.push({ path : "/login" });
                 })
                 .catch((error) => { 
                     console.log(error)

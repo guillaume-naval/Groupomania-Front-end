@@ -22,10 +22,10 @@
     </div> 
   </section>
   <!-- bloc avec tous le(s) post(s) -->    
-  <section id="main-feed">
+  <section id="main-feed" >
     <div>
-      <h1 v-if= 'this.posts !== null' >Dernières Publications</h1>   
-      <h1 v-else> Aucune publication pour l'instant, soyez le premier à en créer une ! </h1>
+      <h1 v-if ="posts.length !=0">Dernières Publications</h1>   
+      <h1 v-else> Aucune publication pour le moment, soyez le premier à en créer une ! </h1>
     </div>
     <article>
         <div class="post" v-for="post in posts.slice().reverse()" :key="post.id"  >
@@ -41,17 +41,17 @@
                 </div>
               </div>
               <div class="icons__post">
-              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
-                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
+              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
+                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
               </div>                                                                                          
             </div>
             <p class="post__content" @click="openPost(post.id)"> {{ post.content }} </p>
             <div class="post__img" @click="openPost(post.id)" >
-                <img :src="post.imageUrl" v-if="post.imageUrl !== ''"  alt="image postée" />
+                <img :src="post.imageUrl" v-if="post.imageUrl!==null"  alt="image postée" />
             </div>
-            
+             
             <div class="post__subsection">
-                <div class="post__comments" @click="isHidden= !isHidden">Commenter<i class="far fa-comment-alt"></i></div>
+                <div class="post__comments" @click="isHidden= true">Commenter<i class="far fa-comment-alt"></i></div>
                 <div class="post__React">React <i class="far fa-laugh-beam"></i><i class="far fa-thumbs-down"></i><i class="far fa-thumbs-up"></i></div>
             </div>
             <!-- section des commentaires -->
@@ -300,7 +300,7 @@ export default {
   width:80%;
 }
 h1{
-  margin-bottom:1em;
+  margin:1em;
   font-family: Trebuchet MS ;
 }
 .post__user{

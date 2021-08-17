@@ -37,11 +37,12 @@ export default {
           email: this.inputEmail,
           password: this.inputPassword,
         })
-        .then(function (res) {
+        .then((res) => {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("userId", res.data.userId);
           localStorage.setItem("username", res.data.username);
           localStorage.setItem("isAdmin", res.data.isAdmin);
+          this.$emit('login');
           window.alert(
             "connexion réussie, redirection vers la page principale"
           );
@@ -98,6 +99,7 @@ button{
   width: 100%;
   margin-bottom: 1em;
   border-radius: 2em;
+  cursor:pointer;
 }
 .invalid{
   display:flex;

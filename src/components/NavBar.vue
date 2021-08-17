@@ -27,7 +27,8 @@ export default {
     methods:{
         localClear() {
         localStorage.clear();
-        router.push({ path : "/" });
+        this.$emit('logout');
+        router.push({ path : "/login" });
         }
     }
 }
