@@ -137,26 +137,26 @@ export default {
               return this.invalid="Le mot de passe n'est pas valide (doit comporter 4 à 15 caractères et inclure au moins 1 chiffre)";
             }
           }
-        axios.get("http://localhost:3000/api/user/" + id, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
-        .then(() => {  
-              axios.put('http://localhost:3000/api/user/' + id, {
-              username: this.inputUsername,
-              email: this.inputEmail,
-              password: this.inputPassword,
-              bio:this.inputBio,
-            },{ headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
-            .then(() => {
-              alert("Modification réussie !");
-              location.reload();
-            })
-            .catch((error) => {
-              alert(error.status);
-              console.log(error);
-            });
-            
-        })
-        .catch((error)=> { console.log(error) 
-        });    
+          axios.get("http://localhost:3000/api/user/" + id, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
+          .then(() => {  
+                axios.put('http://localhost:3000/api/user/' + id, {
+                username: this.inputUsername,
+                email: this.inputEmail,
+                password: this.inputPassword,
+                bio:this.inputBio,
+              },{ headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
+              .then(() => {
+                alert("Modification réussie !");
+                location.reload();
+              })
+              .catch((error) => {
+                alert(error.status);
+                console.log(error);
+              });
+              
+          })
+          .catch((error)=> { console.log(error) 
+          });    
         },
         deleteMyAccount(id) {
             let confirmUserDeletion = confirm("voulez-vous vraiment supprimer votre compte ?");
@@ -164,6 +164,8 @@ export default {
                 axios.delete("http://localhost:3000/api/user/" + id, {headers: { "Authorization": "Bearer " + localStorage.getItem("token") },})
                 .then((res)=> {
                     console.log(res);
+                    localStorage.clear();
+                    this.$emit('login');
                     router.push({ path : "/login" });
                 })
                 .catch((error) => { 

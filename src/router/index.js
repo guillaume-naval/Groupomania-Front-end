@@ -5,6 +5,7 @@ import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import NotFound from "@/views/NotFound.vue";
 import Profile from "@/views/Profile.vue";
+import OthersProfile from "@/views/OthersProfile.vue";
 import Feed from "@/views/Feed.vue";
 import Post from "@/views/Post.vue";
 
@@ -56,6 +57,14 @@ const routes = [
     component: Profile,
     meta: {
       title: "Profil",
+    },
+  },
+  {
+    path: "/userprofile",
+    name: "userProfile",
+    component: OthersProfile,
+    meta: {
+      title: "userProfile",
     },
   },
   {

@@ -6,16 +6,16 @@
         <div class="post">
             <div class="post__header">
               <div class="post__date">
-                <div class="profile__img" >
+                <div class="profile__img" @click="openProfile(post.UserId)">
                   <img v-if="post.User?.imageUrl" :src="post.User?.imageUrl"   alt="image user" />
                 </div>
                 <div >
-                    <div class="post__user">{{ post.User?.username }}</div>
+                    <div class="post__user" @click="openProfile(post.UserId)">{{ post.User?.username }}</div>
                     <div class="post__hour" v-if ="post.createdAt"> le {{ post.createdAt.slice(0,10) + ' à ' + this.post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
               <div class="icons__post">
-                <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
+                <!-- <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-edit"></i></label> -->
                 <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                 
               </div>
             </div>
@@ -87,24 +87,28 @@ export default {
         });  
     },
     methods: {
-        openPost(postId){
-        localStorage.setItem("postId", postId);
-        router.push({ path: '/post' }) 
-        },
-        localClear() {
-            localStorage.clear();
-            router.push({ path : "/" });
-        },
-        commentPage(postId) {
-        const formData = new FormData()
-        formData.append("content", this.commentContent.toString())
-        axios.post("http://localhost:3000/api/post/"+ postId +"/comment", formData, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
-        .then(()=> {
-                    this.commentContent = ""
-                    location.reload();
-                })
-        .catch((error)=> { console.log(error) 
-        })
+        openProfile(profileId){
+        localStorage.setItem("profileId", profileId);
+        router.push({ path: '/userprofile' }) 
+      },
+      openPost(postId){
+      localStorage.setItem("postId", postId);
+      router.push({ path: '/post' }) 
+      },
+      localClear() {
+          localStorage.clear();
+          router.push({ path : "/" });
+      },
+      commentPage(postId) {
+      const formData = new FormData()
+      formData.append("content", this.commentContent.toString())
+      axios.post("http://localhost:3000/api/post/"+ postId +"/comment", formData, { headers: {"Authorization": "Bearer " + localStorage.getItem("token")} })
+      .then(()=> {
+                  this.commentContent = ""
+                  location.reload();
+              })
+      .catch((error)=> { console.log(error) 
+      })
     },
     deletepost(postId) {
             let confirmpostDeletion = confirm("voulez-vous vraiment supprimer cette image ? Tous les commentaires associés seront également supprimés.");
@@ -124,22 +128,26 @@ export default {
             }
     },
     modifypost(postId) {
-            let confirmpostDeletion = confirm("voulez-vous vraiment supprimer cette image ? Tous les commentaires associés seront également supprimés.");
-            if (confirmpostDeletion == true) {
-                axios.put("http://localhost:3000/api/post/" + postId, 
-                {headers: {"Authorization": "Bearer " + localStorage.getItem("token")}
-                })
-                .then((res)=> {
-                  console.log(res)
-                  location.reload()
-                })
-                .catch((error) => { 
-                  location.reload();
-                  console.log(error)})
-            } else {
-                return
+          if (this.inputUsername!=''){
+            if (this.inputUsername.length >= 13 || this.inputUsername.length <= 4) {
+              return this.invalid='Pseudo invalide (doit comporter 4 à 12 caractères)';
             }
-    },
+          } 
+            axios.put('http://localhost:3000/api/user/' + postId, {
+            username: this.inputUsername,
+            email: this.inputEmail,
+            password: this.inputPassword,
+            bio:this.inputBio,
+          },{ headers: {"Authorization": "Bearer" + localStorage.getItem("token")} })
+          .then(() => {
+            alert("Modification réussie !");
+            location.reload();
+          })
+          .catch((error) => {
+            alert(error.status);
+            console.log(error);
+          });  
+        },
     deleteComment(commentId,postId) {
             let confirmpostDeletion = confirm("Voulez-vous vraiment supprimer ce commentaire ?");
             if (confirmpostDeletion == true) {
@@ -157,6 +165,10 @@ export default {
                 return
             }
     },
+  
+  
+
+
     }
 }
 
@@ -196,6 +208,7 @@ export default {
   border-radius: 50%;
   overflow: hidden;
   margin-right:1em;
+  cursor:pointer;
 }
 .profile__img img{
   height:100%;
@@ -276,11 +289,13 @@ h1{
 .post__user{
   font-weight: 900;
   font-size: 1.1em;
+  cursor:pointer;
 }
 
 .post__content{
   font-size:1.2em;
   margin:1em 0em 1em 0em;
+  cursor:pointer;
 }
 .post{
   margin:0em 1em 2em 1em;
@@ -393,6 +408,7 @@ section{
 }
 .post__img{
   width:100%;
+  cursor:pointer;
 }
 .post__img img{
   width:100%;

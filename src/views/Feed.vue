@@ -32,16 +32,15 @@
             <div class="post__header">
               <div class="post__date">
                 <div class="profile__img">
-                  <img v-if="post.User.imageUrl" :src="post.User.imageUrl"   alt="image user" />
+                  <img v-if="post.User.imageUrl" :src="post.User.imageUrl" @click="openProfile(post.UserId)"  alt="image user" />
                 </div>
                 <div >
-                  
-                    <div class="post__user">{{ post.User.username }}</div>
+                    <div class="post__user" @click="openProfile(post.UserId)">{{ post.User.username }}</div>
                     <div class="post__hour"> le {{ post.createdAt.slice(0,10) + ' à ' + post.createdAt.slice(11,16)}}</div>
                 </div>
               </div>
               <div class="icons__post">
-              <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-edit"></i></label>
+              <!-- <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="modifypost(post.id)"><i class="fa fa-fw fa-edit"></i></label> -->
                 <label v-show="isAdmin || post.UserId == userId" class="label__post" @click="deletepost(post.id)"><i class="fa fa-fw fa-trash"></i></label>                                                                                     
               </div>                                                                                          
             </div>
@@ -122,6 +121,10 @@ export default {
       localStorage.setItem("postId", postId);
       router.push({ path: '/post' }) 
     },
+    openProfile(profileId){
+      localStorage.setItem("profileId", profileId);
+      router.push({ path: '/userprofile' }) 
+    },
     formReset(){
       this.$refs.uploadImg.value = "";
     },
@@ -130,6 +133,10 @@ export default {
       this.newImage = URL.createObjectURL(this.file)
     },
     sendPost() {
+      if (this.inputContent==""){
+        alert('Veuillez remplir le champ de saisie du post')
+        return
+      }
       const formData = new FormData()
       formData.append("image", this.file)
       formData.append("content", this.inputContent.toString())
@@ -191,7 +198,28 @@ export default {
     localClear() {
         localStorage.clear();
         router.push({ path : "/" });
-    }
+    },
+    modifypost(postId) {
+          if (this.inputUsername!=''){
+            if (this.inputUsername.length >= 13 || this.inputUsername.length <= 4) {
+              return this.invalid='Pseudo invalide (doit comporter 4 à 12 caractères)';
+            }
+          } 
+            axios.put('http://localhost:3000/api/user/' + postId, {
+            username: this.inputUsername,
+            email: this.inputEmail,
+            password: this.inputPassword,
+            bio:this.inputBio,
+          },{ headers: {"Authorization": "Bearer" + localStorage.getItem("token")} })
+          .then(() => {
+            alert("Modification réussie !");
+            location.reload();
+          })
+          .catch((error) => {
+            alert(error.status);
+            console.log(error);
+          });  
+        },
   }
 }
 </script>
@@ -206,6 +234,12 @@ export default {
      width:35em;
      margin:auto;
   }
+}
+section{
+  margin:0 2em 0 2em;
+}
+article{
+  width:100%; 
 }
 .post__hour{
   font-style: italic;
@@ -226,6 +260,7 @@ export default {
   border-radius: 50%;
   overflow: hidden;
   margin-right:1em;
+  cursor:pointer;
 }
 .profile__img img{
   height:100%;
@@ -307,11 +342,12 @@ h1{
   font-weight: 900;
   font-size: 1.1em;
   margin-bottom: 0.2em;
+  cursor:pointer;
 }
-
 .post__content{
   font-size:1.2em;
   margin:1em 0em 1em 0em;
+  cursor:pointer;
 }
 .post{
   margin:0em 1em 2em 1em;
@@ -415,6 +451,7 @@ textarea::-webkit-scrollbar-thumb {
   flex-direction: column;
   align-items: center;
 }
+
 section{
   margin-bottom: 2em;
 }
@@ -424,6 +461,7 @@ section{
 }
 .post__img{
   width:100%;
+  cursor:pointer;
 }
 .post__img img{
   width:100%;
